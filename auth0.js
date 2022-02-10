@@ -1,5 +1,5 @@
-const jwt = require('jsonwebtoken'); // auth
-const jwksClient = require('jwks-rsa'); // auth
+const jwt = require('jsonwebtoken'); 
+const jwksClient = require('jwks-rsa');
 
 
 const client = jwksClient({
@@ -17,7 +17,6 @@ function getKey(header, callback) {
 
 
 function verifyUser(request, errOrUserCallback) {
-
   try {
     const token = request.headers.authorization.split(' ')[1];
     console.log(token);

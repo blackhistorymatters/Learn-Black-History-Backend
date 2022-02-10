@@ -6,10 +6,12 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const Fact = require('./models/factModel');
 const verifyUser = require('./auth0.js'); 
-
+const factHandler = require('./handlers/FactHandler.js')
+const tagHandler = require('./handlers/QueryHandler.js')
 const app = express();
 app.use(cors());
 app.use(express.json());
+
 
 const PORT = process.env.PORT || 3002;
 mongoose.connect(process.env.MONGODB_URI)
@@ -23,8 +25,14 @@ app.get('/test', (request, response) => {
   response.send('test request received')
 })
 
-app.get('/facts', handleGetfacts); 
-app.post('/facts', handlePostfacts); 
-app.delete('/facts/:id', handleDeletefacts); 
-app.put('/facts/:id', handlePutfacts); 
-app.get('/user', handleGetUser); 
+// app.get('/facts', handleGetfacts); 
+// app.post('/facts', handlePostfacts); 
+// app.delete('/facts/:id', handleDeletefacts); 
+// app.put('/facts/:id', handlePutfacts); 
+// app.get('/user', handleGetUser); 
+  app.get('/facts', factHandler.getFact);
+  app.get('/facts', tagHandler.getQuery);
+
+  
+
+app.listen(PORT, () => console.log(`listening on ${PORT}`));
