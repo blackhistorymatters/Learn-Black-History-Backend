@@ -4,10 +4,12 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const Fact = require('./models/factModel');
-const verifyUser = require('./auth0.js'); 
-const factHandler = require('./handlers/FactHandler.js')
-const tagHandler = require('./handlers/QueryHandler.js')
+const factHandler = require('./apiHandlers/FactHandler.js')
+const tagHandler = require('./apiHandlers/TagHandler.js')
+const peopleHandler = require('./apiHandlers/PeopleHandler.js')
+const dataBaseFacts
+ = require('./mongoHandlers/dataBaseFacts.js')
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -25,13 +27,19 @@ app.get('/test', (request, response) => {
   response.send('test request received')
 })
 
-// app.get('/facts', handleGetfacts); 
-// app.post('/facts', handlePostfacts); 
-// app.delete('/facts/:id', handleDeletefacts); 
-// app.put('/facts/:id', handlePutfacts); 
+
 // app.get('/user', handleGetUser); 
-  app.get('/facts', factHandler.getFact);
-  app.get('/facts', tagHandler.getQuery);
+
+  //API Calls to blackhistoryapi
+  app.get('/facts', factHandler.getAllFacts);
+  app.get('/fact', tagHandler.getFactByTag);
+  app.get('/people', peopleHandler.getFactByPeople);
+  
+  //Mongoose functions accessing database stored facts
+  app.post('/facts', dataBaseFacts.createFact);
+  app.delete('/facts/:id', dataBaseFacts
+  .deleteFact);
+  app.put('/facts/:id', dataBaseFacts.updateFact);
 
   
 

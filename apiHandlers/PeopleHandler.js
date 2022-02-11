@@ -2,20 +2,22 @@
 
 const axios = require('axios');
 
-async function getFact( request, response)  {
+async function getFactByPeople( request, response)  {
+  // const queryObject = request.query.queryObject
+  const queryObject = 'Octavia'
   const config = {
     headers: { "x-api-key": `${process.env.FACT_KEY}` },
     method: 'get',
     baseURL: `https://rest.blackhistoryapi.io`,
-    url: '/facts'
+    url: `/fact?people=${queryObject}`
   }
   
   const factData = await axios(config);
-  console.log(factData.data);
+  console.log('PEOPLE DATA',factData.data);
   
   response.status(200).send(factData.data);
 }
 
 module.exports = {
-  getFact: getFact
+  getFactByPeople: getFactByPeople
 };
