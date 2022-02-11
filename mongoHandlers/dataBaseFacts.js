@@ -86,6 +86,7 @@ async function updateFact(request, response) {
 }
 
 
+
 module.exports = {
   createFact: createFact, 
   deleteFact: deleteFact,

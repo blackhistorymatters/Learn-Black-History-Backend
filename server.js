@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const factHandler = require('./apiHandlers/FactHandler.js')
 const tagHandler = require('./apiHandlers/TagHandler.js')
 const peopleHandler = require('./apiHandlers/PeopleHandler.js')
+const verifyUser = require('./auth0.js')
 const dataBaseFacts
  = require('./mongoHandlers/dataBaseFacts.js')
 
@@ -40,7 +41,16 @@ app.get('/test', (request, response) => {
   app.delete('/facts/:id', dataBaseFacts
   .deleteFact);
   app.put('/facts/:id', dataBaseFacts.updateFact);
+  app.get('/user', handleGetUser);
 
-  
+  function handleGetUser(req, res) {
+    verifyUser(req, (err, user) => {
+      if (err) {
+        res.send('This token is invalid');
+      } else {
+        res.send(user);
+      }
+    })
+  }
 
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
