@@ -1,6 +1,6 @@
 'use strict';
 const mongoose = require('mongoose');
-const verifyUser = require('../auth0.js'); 
+const verifyUser = require('../auth0.js');
 const { triggerAsyncId } = require('async_hooks');
 
 const Fact = require('../models/factModel.js');
@@ -8,11 +8,37 @@ const Fact = require('../models/factModel.js');
 mongoose.connect(process.env.MONGODB_URI)
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
+db.once('open', function () {
   console.log('Mongoose is connected')
 });
 
-//Allow user to create new fat
+//Allow user to get their facts
+async function getUserFacts(request, response) {
+  verifyUser(request, async (err, user) => {
+    if (err) {
+      res.send('invalid token');
+    } else {
+      try {
+        let queryObj = {};
+        if (user.email) {
+          queryObj = { email: user.email }
+        }
+        let factsFromDB = await Fact.find((queryObj));
+
+        if (factsFromDB) {
+          response.status(200).send(factsFromDB);
+        } else {
+          response.status(404).send('no facts for you!');
+        }
+      } catch (error) {
+        console.error(error);
+        response.status(500).send('server error cannot access');
+      }
+    }
+  })
+}
+
+//Allow user to create new fact
 
 async function createFact(request, response) {
 
@@ -34,61 +60,68 @@ async function createFact(request, response) {
 
 //Allow user to delete a fact by ID
 async function deleteFact(request, response) {
-  try {
-    const id = request.params.id;
-    const email = request.query.email;
-    console.log(id);
+  verifyUser(request, async (err, user) => {
+    if (err) {
+      response.send('invalid token');
+    } else {
+      try {
+        const id = request.params.id;
+        const email = user.email;
+        console.log(id, email);
 
-    // const book = await Fact.findOne({ _id: id, email: email });
-    const book = await Fact.findOne({ _id: id});
-    console.log(fact);
-    if (!fact) {
-      response.status(400).send('unable to delete fact');
-      return;
+        const factDelete = await Fact.findOne({ _id: id, email: email });
+        console.log(factDelete);
+        if (!factDelete) {
+          response.status(400).send('unable to delete fact');
+          return;
+        }
+
+
+        await Fact.findByIdAndDelete(id);
+        response.status(202).send('This fact has been removed!')
+      } catch (error) {
+        console.log(error);
+        response.status(404).send('unable to delete fact');
+      }
     }
-
-    // if (fact.email !== email) {
-    //   response.status(400).send('unable to delete fact');
-    // }
-    await Fact.findByIdAndDelete(id);
-    response.status(202).send('This fact has been removed!')
-  } catch (error) {
-    console.log(error);
-    response.status(404).send('unable to delete fact');
-  }
+  })
 }
 
 //Allow user to update a fact by id
 async function updateFact(request, response) {
+  verifyUser(request, async (err, user) => {
+    if (err) {
+      response.send('invalid token');
+    } else {
 
-  try {
-    const id = request.params.id;
-    const email = request.query.email;
+      try {
+        const id = request.params.id;
+        const email = user.email;
 
-    const factUpdate = await Fact.findOne({ _id: id, email: email })
+        const factUpdate = await Fact.findOne({ _id: id, email: email })
 
-    if (!factUpdate) {
-      response.status(404).send('no facts for you!');
-      return;
+        if (!factUpdate) {
+          response.status(404).send('no updating facts for you!');
+          return;
+        }
+
+        const updatedFact = await Fact.findByIdAndUpdate(id, request.body, { new: true });
+        response.send(updatedFact)
+
+      }
+      catch (error) {
+        console.error(error);
+        response.status(500).send('We have a problem');
+      }
     }
-    if (factUpdate.email !== email) {
-      response.status(400).send('unable to update fact');
-      return;
-    }
-    const updatedFact = await Fact.findByIdAndUpdate(id, request.body, { new: true});
-    response.send(updatedFact)
-
-  }
-  catch (error) {
-    console.error(error);
-    response.status(500).send('We have a problem');
-  }
+  })
 }
 
 
 
 module.exports = {
-  createFact: createFact, 
+  createFact: createFact,
   deleteFact: deleteFact,
-  updateFact: updateFact
+  updateFact: updateFact,
+  getUserFacts: getUserFacts
 };

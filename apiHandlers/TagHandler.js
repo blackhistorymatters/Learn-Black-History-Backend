@@ -3,8 +3,8 @@
 const axios = require('axios');
 
 async function getFactByTag( request, response)  {
-  // const queryObject = request.query.queryObject
-  const queryObject = 'MLK'
+  const queryObject = request.query.queryObject
+  // const queryObject = 'MLK'
   const config = {
     headers: { "x-api-key": `${process.env.FACT_KEY}` },
     method: 'get',

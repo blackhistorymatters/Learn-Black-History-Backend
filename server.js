@@ -37,11 +37,12 @@ app.get('/test', (request, response) => {
   app.get('/people', peopleHandler.getFactByPeople);
   
   //Mongoose functions accessing database stored facts
-  app.post('/facts', dataBaseFacts.createFact);
-  app.delete('/facts/:id', dataBaseFacts
+  app.post('/userfacts', dataBaseFacts.createFact);
+  app.delete('/userfacts/:id', dataBaseFacts
   .deleteFact);
-  app.put('/facts/:id', dataBaseFacts.updateFact);
+  app.put('/userfacts/:id', dataBaseFacts.updateFact);
   app.get('/user', handleGetUser);
+  app.get('/userfacts', dataBaseFacts.getUserFacts);
 
   function handleGetUser(req, res) {
     verifyUser(req, (err, user) => {
