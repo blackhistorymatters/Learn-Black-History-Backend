@@ -7,6 +7,8 @@ const mongoose = require('mongoose');
 const factHandler = require('./apiHandlers/FactHandler.js')
 const tagHandler = require('./apiHandlers/TagHandler.js')
 const peopleHandler = require('./apiHandlers/PeopleHandler.js')
+const getTagList = require('./apiHandlers/TagTemplate.js')
+const getPeopleList = require('./apiHandlers/PeopleTemplate.js')
 const verifyUser = require('./auth0.js')
 const dataBaseFacts
  = require('./mongoHandlers/dataBaseFacts.js')
@@ -35,6 +37,8 @@ app.get('/test', (request, response) => {
   app.get('/facts', factHandler.getAllFacts);
   app.get('/fact', tagHandler.getFactByTag);
   app.get('/people', peopleHandler.getFactByPeople);
+  app.get('/peoplelist', getPeopleList.getPeopleList);
+  app.get('/tagslist', getTagList.getTagList);
   
   //Mongoose functions accessing database stored facts
   app.post('/userfacts', dataBaseFacts.createFact);
