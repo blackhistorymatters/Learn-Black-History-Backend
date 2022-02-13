@@ -41,16 +41,23 @@ async function getUserFacts(request, response) {
 //Allow user to create new fact
 
 async function createFact(request, response) {
-
+  console.log("tried to create a fact!");
   verifyUser(request, async (err, user) => {
+    console.log('user.email: ', user.email);
+    console.log('request dot body: ', request.body);
     if (err) {
       response.send('invalid token');
+      console.log(err);
     } else {
       const { text, source } = request.body;
+      console.log("did not error immediately omg")
       try {
-        const newFact = await Fact.create({ ...request.body, email: user.email })
+        console.log("try loop was hit")
+        const newFact = await Fact.create({ ...request.body, user: user.email })
+        console.log("new fact was successfully created!");
         response.status(200).send(newFact)
       } catch (e) {
+        console.log('catch loop was hit!')
         response.status(500).send('server error');
       }
     }
