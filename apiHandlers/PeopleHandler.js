@@ -3,7 +3,7 @@
 const axios = require('axios');
 
 async function getFactByPeople( request, response)  {
-  const queryObject = request.query.queryObject
+  const queryObject = request.query.people
   // const queryObject = 'Octavia'
   const config = {
     headers: { "x-api-key": `${process.env.FACT_KEY}` },
