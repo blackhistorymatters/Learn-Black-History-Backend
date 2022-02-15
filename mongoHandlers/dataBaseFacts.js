@@ -82,12 +82,10 @@ async function deleteFact(request, response) {
           response.status(400).send('unable to delete fact');
           return;
         }
-        if (factDelete.email !== email) {
-          response.status(400).send('unable to delete book');
+        if (factDelete.user !== email) {
+          response.status(400).send('unable to delete fact');
           return;
         }
-
-
         await Fact.findByIdAndDelete(id);
         response.status(202).send('This fact has been removed!')
       } catch (error) {
