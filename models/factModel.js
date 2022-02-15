@@ -8,7 +8,6 @@ const factSchema = new mongoose.Schema({
   tags: { type: String },
   text: { type: String, required: true },
   source: { type: String, required: true },
-
 });
 
 const factModel = mongoose.model('fact', factSchema);
