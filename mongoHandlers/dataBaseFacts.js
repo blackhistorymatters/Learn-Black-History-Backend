@@ -21,7 +21,8 @@ async function getUserFacts(request, response) {
       try {
         let queryObj = {};
         if (user.email) {
-          queryObj = { email: user.email }
+          console.log(user.email);
+          queryObj = { user: user.email }
         }
         let factsFromDB = await Fact.find((queryObj));
 
