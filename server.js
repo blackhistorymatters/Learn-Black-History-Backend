@@ -31,7 +31,7 @@ app.get('/test', (request, response) => {
 })
 
 
-// app.get('/user', handleGetUser); 
+
 
   //API Calls to blackhistoryapi
   app.get('/facts', factHandler.getAllFacts);
